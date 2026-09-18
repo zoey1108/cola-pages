@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#ff8b3d">
+  <title>易纠错 · AI 错题本</title>
+  <style>
+    :root { --orange:#ff8b3d; --orange-deep:#e96d20; --peach:#fff0e4; --ink:#24201d; --muted:#746a63; --line:#eee6df; --paper:#fffdfa; --green:#39ad68; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; color:var(--ink); background:var(--paper); font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif; letter-spacing:0; }
+    button, a { font:inherit; }
+    a { color:inherit; text-decoration:none; }
+    .shell { max-width:720px; margin:0 auto; overflow:hidden; padding-bottom:84px; }
+    .section { padding:64px 24px; }
+    .eyebrow { display:inline-flex; align-items:center; gap:7px; color:var(--orange-deep); font-size:13px; font-weight:700; }
+    .eyebrow::before { content:""; width:18px; height:3px; border-radius:99px; background:currentColor; }
+    h1,h2,h3,p { margin:0; }
+    h2 { margin-top:13px; font-size:29px; line-height:1.28; font-weight:800; }
+    .lead { margin-top:17px; color:#574f4a; font-size:16px; line-height:1.8; }
+    .hero { min-height:630px; position:relative; display:flex; flex-direction:column; justify-content:space-between; padding:28px 24px 42px; background:linear-gradient(155deg,#ffad69 0%,#ff9149 56%,#f8772b 100%); color:white; }
+    .topline { display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:700; }
+    .brand { display:flex; gap:0; align-items:center; }
+    .brand-mark { display:none; }
+    .page-count { opacity:.75; font-variant-numeric:tabular-nums; }
+    .hero-copy { position:relative; z-index:1; margin-top:38px; }
+    .hero h1 { max-width:390px; font-size:48px; line-height:1.08; font-weight:900; }
+    .hero .slogan { max-width:300px; margin-top:17px; font-size:18px; line-height:1.55; font-weight:600; }
+    .hero-card { position:relative; min-height:220px; margin-top:34px; padding:22px; overflow:hidden; border-radius:22px; background:rgba(255,255,255,.2); border:1px solid rgba(255,255,255,.33); box-shadow:0 22px 40px rgba(155,60,10,.2); backdrop-filter:blur(4px); }
+    .hero-card p { width:50%; font-size:15px; line-height:1.65; font-weight:600; }
+    .hero-card strong { display:block; width:50%; margin-top:9px; font-size:16px; line-height:1.45; }
+    .teacher { position:absolute; right:8px; bottom:7px; width:170px; filter:drop-shadow(0 16px 13px rgba(138,53,8,.2)); }
+    .scroll-cue { display:flex; align-items:center; gap:8px; margin-top:26px; font-size:12px; opacity:.9; }
+    .scroll-cue span { width:18px; height:29px; display:inline-block; border:1px solid rgba(255,255,255,.8); border-radius:12px; position:relative; }
+    .scroll-cue span::after { content:""; position:absolute; width:3px; height:7px; border-radius:9px; background:#fff; left:6px; top:6px; animation:wheel 1.6s infinite; }
+    .statement { padding:22px 20px; border-left:4px solid var(--orange); background:#fff7f0; border-radius:0 12px 12px 0; font-size:17px; font-weight:700; line-height:1.65; }
+    .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:26px; }
+    .stat { min-height:137px; padding:16px 12px; border-radius:14px; background:#fff7ef; }
+    .stat b { display:block; color:var(--orange-deep); font-size:29px; line-height:1; font-variant-numeric:tabular-nums; }
+    .stat span { display:block; margin-top:10px; color:var(--muted); font-size:12px; line-height:1.55; }
+    .source { margin-top:15px; color:#9e958d; font-size:11px; line-height:1.55; }
+    .teacher-intro { background:#fff8f2; }
+    .teacher-grid { display:grid; gap:18px; margin-top:25px; }
+    .principle { display:flex; gap:14px; align-items:flex-start; padding:19px 18px; border:1px solid #f3e3d7; border-radius:14px; background:#fff; }
+    .principle-icon { flex:0 0 34px; width:34px; height:34px; display:grid; place-items:center; border-radius:10px; background:#ffe6d2; color:var(--orange-deep); font-weight:900; }
+    .principle h3 { font-size:16px; }
+    .principle p { margin-top:5px; color:var(--muted); font-size:14px; line-height:1.65; }
+    .process { margin-top:28px; }
+    .step { display:grid; grid-template-columns:37px 1fr; gap:15px; position:relative; padding:0 0 25px; }
+    .step:last-child { padding-bottom:0; }
+    .step:not(:last-child)::after { content:""; position:absolute; left:18px; top:38px; width:1px; height:calc(100% - 22px); background:#f0c49f; }
+    .step-no { position:relative; z-index:1; display:grid; place-items:center; width:37px; height:37px; border-radius:50%; color:white; background:var(--orange); font-size:14px; font-weight:800; }
+    .step h3 { padding-top:7px; font-size:18px; }
+    .step p { margin-top:7px; color:var(--muted); font-size:14px; line-height:1.7; }
+    .feature-section { background:#f9f7f4; }
+    .features { display:grid; grid-template-columns:1fr 1fr; gap:11px; margin-top:26px; }
+    .feature { min-height:175px; padding:18px 15px; border:1px solid #eee8e3; border-radius:15px; background:#fff; }
+    .feature-icon { width:35px; height:35px; display:grid; place-items:center; border-radius:10px; background:var(--peach); color:var(--orange-deep); }
+    .feature-icon svg { width:19px; height:19px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+    .feature h3 { margin-top:15px; font-size:16px; }
+    .feature p { margin-top:7px; color:var(--muted); font-size:12px; line-height:1.65; }
+    .audience { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:25px; }
+    .audience-card { padding:22px 18px; border-radius:16px; }
+    .audience-card.parent { background:#fff0e5; }
+    .audience-card.child { background:#edf9ef; }
+    .audience-card .label { display:block; color:var(--orange-deep); font-size:13px; font-weight:700; }
+    .child .label { color:#22844c; }
+    .audience-card h3 { margin-top:9px; font-size:17px; line-height:1.4; }
+    .audience-card p { margin-top:8px; color:#645b55; font-size:13px; line-height:1.7; }
+    .scenes { margin-top:30px; display:grid; gap:0; }
+    .scene { display:grid; grid-template-columns:94px 1fr; gap:12px; padding:16px 0; border-bottom:1px solid var(--line); }
+    .scene:first-child { border-top:1px solid var(--line); }
+    .scene b { color:var(--orange-deep); font-size:14px; }
+    .scene span { color:var(--muted); font-size:14px; line-height:1.65; }
+    .promise { background:#2c2723; color:#fff; }
+    .promise h2 { color:#fff; }
+    .promise .eyebrow { color:#ffb575; }
+    .promise .lead { color:#ded8d3; }
+    .promise-list { display:grid; gap:14px; margin-top:25px; }
+    .promise-item { display:flex; align-items:flex-start; gap:12px; padding:17px; border:1px solid rgba(255,255,255,.12); border-radius:13px; background:rgba(255,255,255,.06); }
+    .check { flex:0 0 23px; display:grid; place-items:center; width:23px; height:23px; border-radius:50%; color:#182e20; background:#a7e4bd; font-size:13px; font-weight:900; }
+    .promise-item p { color:#e6e1dd; font-size:14px; line-height:1.65; }
+    .cta { padding:66px 24px 36px; text-align:center; background:#fff7f0; }
+    .cta h2 { font-size:31px; }
+    .cta p { margin:13px auto 0; max-width:350px; color:var(--muted); font-size:15px; line-height:1.75; }
+    .download { display:flex; justify-content:center; align-items:center; gap:9px; width:100%; min-height:54px; margin-top:26px; border:0; border-radius:14px; color:#fff; background:var(--orange-deep); box-shadow:0 10px 22px rgba(219,95,25,.24); font-size:16px; font-weight:800; cursor:pointer; }
+    .download:active { transform:translateY(1px); }
+    .contact { margin-top:17px; color:#978c84; font-size:12px; line-height:1.6; }
+    .footer { margin-top:34px; color:#aa9c93; font-size:12px; font-weight:600; }
+    .fixed-cta { position:fixed; z-index:10; left:50%; bottom:14px; transform:translateX(-50%); width:min(calc(100% - 32px),688px); padding:10px; border:1px solid rgba(255,255,255,.7); border-radius:17px; background:rgba(255,255,255,.9); box-shadow:0 10px 30px rgba(51,35,25,.14); backdrop-filter:blur(10px); }
+    .fixed-cta a { display:flex; justify-content:center; align-items:center; min-height:45px; border-radius:11px; color:#fff; background:var(--orange); font-size:15px; font-weight:800; }
+    .reveal { opacity:0; transform:translateY(18px); transition:opacity .55s ease,transform .55s ease; }
+    .reveal.show { opacity:1; transform:none; }
+    @keyframes wheel { 0%,100% { transform:translateY(0); opacity:1; } 70% { transform:translateY(8px); opacity:.2; } }
+    @media (min-width:660px) { .section { padding:72px 52px; } .hero { padding:32px 52px 46px; } .cta { padding-left:52px; padding-right:52px; } }
+    @media (max-width:370px) { .hero h1 { font-size:42px; } .stats { gap:7px; } .stat { padding:14px 9px; } .stat b { font-size:26px; } .feature { padding:15px 13px; } }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } .reveal { opacity:1; transform:none; transition:none; } .scroll-cue span::after { animation:none; } }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="hero" id="top">
+      <div class="topline"><div class="brand"><span>易纠错 · AI 错题本</span></div><span class="page-count">01 / 08</span></div>
+      <div class="hero-copy">
+        <h1>错了不再错<br>就是进步。</h1>
+        <p class="slogan">每一道错题，都有一个从“不会”走到“会了”的可见过程。</p>
+        <div class="hero-card">
+          <p>不是搜题工具，而是陪孩子把一道错题真正练会的 AI 错题本。</p>
+          <strong>小易老师，陪孩子学会每一道错题</strong>
+          <img class="teacher" src="assets/cover-art-000.png" alt="小易老师插画">
+        </div>
+        <div class="scroll-cue"><span></span>向下了解易纠错</div>
+      </div>
+    </section>
+
+    <section class="section reveal">
+      <span class="eyebrow">一句话认识易纠错</span>
+      <h2>答案之后，<br>才是我们真正关心的事。</h2>
+      <p class="lead">易纠错面向小学、初中、高中学生。把孩子做错的题收进来，讲明白错在哪，练到真正会为止。</p>
+      <div class="statement" style="margin-top:25px;">搜题给的是答案，答案拿到，事情就结束了。易纠错关心的是：这道题为什么错、下次怎么不错、这一类题是不是真的会了。</div>
+    </section>
+
+    <section class="section reveal" style="padding-top:0;">
+      <span class="eyebrow">为什么需要它</span>
+      <h2>孩子需要一本<br>“会说话”的错题本</h2>
+      <p class="lead">手抄太慢坚持不了；家长辅导常常讲不明白，越讲越急；只给答案的工具，让错误原样留在脑子里。</p>
+      <div class="stats" aria-label="家长调研数据">
+        <div class="stat"><b data-target="88">0%</b><span>希望工具讲思路、引导孩子自主思考</span></div>
+        <div class="stat"><b data-target="51">0%</b><span>对现有工具最不满“只给答案不给思路”</span></div>
+        <div class="stat"><b data-target="85">0%</b><span>希望孩子自己操作，家长看结果</span></div>
+      </div>
+      <p class="source">来源：易纠错上线前家长调研，两百余位小初高家长。</p>
+    </section>
+
+    <section class="section teacher-intro reveal">
+      <span class="eyebrow">认识小易老师</span>
+      <h2>她不急着报答案，<br>先陪孩子把题想明白。</h2>
+      <p class="lead">拍下一道题，她先读题、说明考什么，再一步一步讲思路；讲到关键处会停下来问孩子，讲完给出考点、方法和答案小结。</p>
+      <div class="teacher-grid">
+        <div class="principle"><div class="principle-icon">1</div><div><h3>先讲思路</h3><p>孩子听到的不是“这题选 C”，而是“这类题该怎么想”。</p></div></div>
+        <div class="principle"><div class="principle-icon">2</div><div><h3>随时追问</h3><p>听不明白可以打断提问；答错了，会解释错在什么地方。</p></div></div>
+        <div class="principle"><div class="principle-icon">3</div><div><h3>留下本题小结</h3><p>考点、方法、答案留在错题里，下一次复习有据可依。</p></div></div>
+      </div>
+    </section>
+
+    <section class="section reveal">
+      <span class="eyebrow">五步闭环</span>
+      <h2>从一道错题，<br>到一类题都会。</h2>
+      <div class="process">
+        <article class="step"><div class="step-no">01</div><div><h3>采集</h3><p>拍照答疑、作业批改、拍错题录入三种方式。单题整页都能识别，手写答案一键抹除。</p></div></article>
+        <article class="step"><div class="step-no">02</div><div><h3>分析</h3><p>自动标注学科与知识点，从十项错因里定位：审题不清、概念理解错误、公式记错、计算失误、方法思路错误等。</p></div></article>
+        <article class="step"><div class="step-no">03</div><div><h3>巩固</h3><p>天天练按错题分布推十分钟小练习；周周学周末再考本周错题。连对两次，才算掌握。</p></div></article>
+        <article class="step"><div class="step-no">04</div><div><h3>变式</h3><p>举一反三给出同考点相似题。换个数字、换个问法还能做对，才是真会了。</p></div></article>
+        <article class="step"><div class="step-no">05</div><div><h3>提升</h3><p>按章节生成练习卷，或把错题排成 A4 纸质卷。练习中新错题再回到采集，闭环继续滚动。</p></div></article>
+      </div>
+    </section>
+
+    <section class="section feature-section reveal">
+      <span class="eyebrow">六个功能</span>
+      <h2>各管一件事，<br>一起把错题练会。</h2>
+      <div class="features">
+        <article class="feature"><div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 4h-5L8 6H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-4l-1.5-2Z"/><circle cx="12" cy="13" r="3"/></svg></div><h3>拍照答疑</h3><p>一拍即识别，分步解析、标准答案、易错点和本题考点。</p></article>
+        <article class="feature"><div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="m9 12 2 2 4-4"/><path d="M9 7h6"/></svg></div><h3>作业批改</h3><p>整页作业逐题判定对错、说明原因，错题一键入本。</p></article>
+        <article class="feature"><div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11a9 9 0 0 1 18 0"/><path d="M3 11v4a2 2 0 0 0 2 2h1v-6H5a2 2 0 0 0-2 2Z"/><path d="M21 11v4a2 2 0 0 1-2 2h-1v-6h1a2 2 0 0 1 2 2Z"/><path d="M8 17c.8 1.2 2.1 2 4 2"/></svg></div><h3>AI 语音讲解</h3><p>小易一对一讲题，随时打断提问，听不懂再讲一遍。</p></article>
+        <article class="feature"><div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/><path d="M8 6h8M8 10h8"/></svg></div><h3>错题本</h3><p>十科分册，六个维度筛选，支持批量整理、移动和打标签。</p></article>
+        <article class="feature"><div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c1 3-2 4-2 7 0 1.4.9 2.5 2.2 2.5 1.7 0 2.8-1.4 2.8-3.2 2 1.5 3 3.3 3 5.5A6 6 0 0 1 12 21a6 6 0 0 1-6-6c0-2.7 1.5-5 4.1-6.7-.2 2.1.7 3.2 1.8 3.2 1.7 0 1.9-2.5.1-8.5Z"/></svg></div><h3>天天练与打卡</h3><p>每日推题、连续火苗、里程碑奖励，让坚持看得见。</p></article>
+        <article class="feature"><div class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/><path d="M17 13h.01"/></svg></div><h3>AI 组卷与打印</h3><p>组一份卷、印一张纸，线上练完，线下再练。</p></article>
+      </div>
+    </section>
+
+    <section class="section reveal">
+      <span class="eyebrow">让坚持发生</span>
+      <h2>家长看得见，<br>孩子能坚持。</h2>
+      <div class="audience">
+        <article class="audience-card parent"><span class="label">给家长</span><h3>不用翻作业本，也不用猜</h3><p>每个学科都有“共几题、已掌握几题”。孩子还有多少题不会、这周消灭了几道，一眼看到。</p></article>
+        <article class="audience-card child"><span class="label">给孩子</span><h3>拍一拍、听一听、练一练</h3><p>自己就能完成。打卡、火苗、E能、里程碑，让练会错题有进度、有反馈、有成就感。</p></article>
+      </div>
+      <div class="scenes">
+        <div class="scene"><b>考试卷发下来</b><span>整页拍进去，错题全部入本、错因标好，比手抄快十倍。</span></div>
+        <div class="scene"><b>每天晚上十分钟</b><span>天天练推的都是自己的薄弱点，不用家长挑题。</span></div>
+        <div class="scene"><b>周末复盘</b><span>周周学把本周错题再考一遍，掌握程度升上去才算过关。</span></div>
+        <div class="scene"><b>考前冲刺</b><span>按章节组一套卷，或把“未掌握”的错题打印出来集中再练。</span></div>
+      </div>
+    </section>
+
+    <section class="section promise reveal">
+      <span class="eyebrow">数据与承诺</span>
+      <h2>孩子的错题，<br>是自己的学习资产。</h2>
+      <p class="lead">所有错题、练习记录、掌握程度都保存在账号里，换设备登录依然可见，最多三台设备同时使用。</p>
+      <div class="promise-list">
+        <div class="promise-item"><i class="check">✓</i><p>严格遵守未成年人个人信息保护规定，十四周岁以下的孩子使用前需要家长确认。</p></div>
+        <div class="promise-item"><i class="check">✓</i><p>权限按场景申请，随时可在设置中收回。</p></div>
+        <div class="promise-item"><i class="check">✓</i><p>AI 生成的解析与讲解均有标注；与课本或老师讲法不一致时，以课本和老师为准。</p></div>
+      </div>
+    </section>
+
+    <section class="cta reveal" id="download">
+      <span class="eyebrow">开始使用</span>
+      <h2>把下一道错题，<br>练到真的会。</h2>
+      <p>应用商店搜索“易纠错”，或访问官网下载安装。新用户可免费体验全部功能，之后按需选择月卡、季卡、半年卡或年卡。</p>
+      <a class="download" href="https://www.yijiucuo.com/" target="_blank" rel="noopener">访问易纠错官网 <span aria-hidden="true">→</span></a>
+      <p class="contact">应用内「设置 → 关于易纠错 → 联系我们」<br>工作日 9:00–18:00 回复</p>
+      <p class="footer">易纠错 · AI 错题本 · 错了不再错，就是进步</p>
+    </section>
+  </main>
+  <nav class="fixed-cta" aria-label="下载入口"><a href="https://www.yijiucuo.com/" target="_blank" rel="noopener">开始使用易纠错 <span aria-hidden="true">→</span></a></nav>
+  <script>
+    const revealObserver = new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('show'); revealObserver.unobserve(entry.target); } }), { threshold: .12 });
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+    const numberObserver = new IntersectionObserver(entries => entries.forEach(entry => { if (!entry.isIntersecting) return; const el = entry.target; const target = Number(el.dataset.target); const start = performance.now(); const duration = 900; const tick = now => { const ratio = Math.min((now - start) / duration, 1); el.textContent = Math.round(target * (1 - Math.pow(1 - ratio, 3))) + '%'; if (ratio < 1) requestAnimationFrame(tick); }; requestAnimationFrame(tick); numberObserver.unobserve(el); }), { threshold: .65 });
+    document.querySelectorAll('[data-target]').forEach(el => numberObserver.observe(el));
+  </script>
+</body>
+</html>
