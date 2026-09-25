@@ -40,6 +40,9 @@ strong { font-weight: 700; color: #202b3b; }
   .section-title { font-size: 11.5pt; margin-bottom: 4pt; }
   .job { margin-bottom: 7pt; }
   li { margin-bottom: 3pt; }
+  .edit-toolbar { width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .edit-toolbar button { width: 100%; }
+  .edit-toolbar .hint { grid-column: 1 / -1; }
 }
 .edit-toolbar { position: relative; z-index: 2; width: max-content; max-width: 100%; margin: 0 auto 12px; padding: 8px 10px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px; border: 1px solid #dbe3ee; border-radius: 12px; background: rgba(255,255,255,.97); box-shadow: 0 4px 18px rgba(25,43,69,.16); font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
 .edit-toolbar button { appearance: none; border: 1px solid #cad5e3; border-radius: 7px; padding: 7px 10px; background: #fff; color: #243247; font-size: 13px; cursor: pointer; }
