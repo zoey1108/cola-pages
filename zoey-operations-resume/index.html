@@ -49,6 +49,11 @@ strong { font-weight: 700; color: #202b3b; }
 .edit-toolbar button.primary { color: white; background: #1763d1; border-color: #1763d1; }
 .edit-toolbar button:disabled { opacity: .45; cursor: not-allowed; }
 .edit-toolbar .hint { flex-basis: 100%; text-align: center; color: #566276; font-size: 11px; }
+@media screen and (max-width: 640px) {
+  .edit-toolbar { width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .edit-toolbar button { width: 100%; }
+  .edit-toolbar .hint { grid-column: 1 / -1; }
+}
 #resume-content[contenteditable="true"] { outline: 2px dashed #1763d1; outline-offset: 5px; }
 @media print { .edit-toolbar { display: none !important; } body { width: auto; max-width: none; margin: 0; padding: 0; box-shadow: none; } #resume-content[contenteditable="true"] { outline: none; } }
 </style>
