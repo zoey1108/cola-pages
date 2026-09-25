@@ -29,9 +29,9 @@ strong { font-weight: 700; color: #202b3b; }
 .education-line { display: flex; justify-content: space-between; gap: 8pt; margin: 0; white-space: nowrap; }
 .skills p { margin: 0 0 1.2pt; }
 .skill-label { font-weight: 700; color: #202b3b; }
-@media screen { body { width: 210mm; max-width: 100%; min-height: 297mm; margin: 16px auto; padding: 8mm 9.5mm; background: white; box-shadow: 0 4px 22px rgba(25, 43, 69, .12); } }
+@media screen { body { width: 210mm; max-width: 100%; min-height: 297mm; margin: 16px auto; padding: 68px 9.5mm 8mm; background: white; box-shadow: 0 4px 22px rgba(25, 43, 69, .12); } }
 @media screen and (max-width: 640px) {
-  body { width: 100%; min-height: 100vh; margin: 0; padding: 18px 15px; font-size: 10pt; line-height: 1.45; box-shadow: none; }
+  body { width: 100%; min-height: 100vh; margin: 0; padding: 72px 15px 18px; font-size: 10pt; line-height: 1.45; box-shadow: none; }
   h1 { font-size: 20pt; }
   .contact { display: grid; grid-template-columns: 1fr; gap: 2pt; white-space: normal; font-size: 9pt; }
   .job-head { flex-wrap: wrap; align-items: flex-start; gap: 1pt 8pt; }
@@ -41,10 +41,25 @@ strong { font-weight: 700; color: #202b3b; }
   .job { margin-bottom: 7pt; }
   li { margin-bottom: 3pt; }
 }
-@media print { body { width: auto; max-width: none; margin: 0; box-shadow: none; } }
+.edit-toolbar { position: fixed; z-index: 1000; top: 10px; left: 50%; transform: translateX(-50%); width: max-content; max-width: calc(100vw - 20px); padding: 8px 10px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px; border: 1px solid #dbe3ee; border-radius: 12px; background: rgba(255,255,255,.97); box-shadow: 0 4px 18px rgba(25,43,69,.16); font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+.edit-toolbar button { appearance: none; border: 1px solid #cad5e3; border-radius: 7px; padding: 7px 10px; background: #fff; color: #243247; font-size: 13px; cursor: pointer; }
+.edit-toolbar button.primary { color: white; background: #1763d1; border-color: #1763d1; }
+.edit-toolbar button:disabled { opacity: .45; cursor: not-allowed; }
+.edit-toolbar .hint { flex-basis: 100%; text-align: center; color: #566276; font-size: 11px; }
+#resume-content[contenteditable="true"] { outline: 2px dashed #1763d1; outline-offset: 5px; }
+@media print { .edit-toolbar { display: none !important; } body { width: auto; max-width: none; margin: 0; padding: 0; box-shadow: none; } #resume-content[contenteditable="true"] { outline: none; } }
 </style>
 </head>
 <body>
+<nav class="edit-toolbar" id="edit-toolbar" aria-label="简历编辑工具">
+  <button class="primary" id="edit-start" type="button">开始编辑</button>
+  <button id="edit-save" type="button" hidden>保存修改</button>
+  <button id="edit-cancel" type="button" hidden>撤销本次</button>
+  <button id="edit-export" type="button">下载当前简历 HTML</button>
+  <button id="edit-print" type="button">打印 / 保存为 PDF</button>
+  <span class="hint" id="edit-hint">点“开始编辑”后，直接点击简历文字修改；保存仅存在当前浏览器。</span>
+</nav>
+<main id="resume-content">
 <header>
   <h1>扎依旦木·艾买尔</h1>
   <div class="contact"><span>电话：17602654574（同微信）</span><span>邮箱：2511577820@qq.com</span><span>意向城市：北京</span></div>
@@ -107,5 +122,76 @@ strong { font-weight: 700; color: #202b3b; }
   <p><span class="skill-label">AI 工具：</span>ChatGPT / Kimi / DeepSeek（调研、数据解读）；即梦 / LibTV（视觉素材）；Claude / Codex（Agent 搭建、策略推演）</p>
   <p><span class="skill-label">语言能力：</span>中文（母语）/ 维吾尔语（母语）/ 英语（CET-6）</p>
 </section>
+</main>
+<script>
+(() => {
+  const content = document.getElementById('resume-content');
+  const hint = document.getElementById('edit-hint');
+  const startButton = document.getElementById('edit-start');
+  const saveButton = document.getElementById('edit-save');
+  const cancelButton = document.getElementById('edit-cancel');
+  const storageKey = 'zoey-operations-resume-editor-v1';
+  let beforeEdit = null;
+
+  try {
+    const saved = localStorage.getItem(storageKey);
+    if (saved) {
+      content.innerHTML = saved;
+      hint.textContent = '已载入此浏览器之前保存的修改。';
+    }
+  } catch (_) {
+    hint.textContent = '浏览器未开放本地保存；仍可编辑并下载当前 HTML。';
+  }
+
+  function setEditing(editing) {
+    content.contentEditable = editing ? 'true' : 'false';
+    startButton.hidden = editing;
+    saveButton.hidden = !editing;
+    cancelButton.hidden = !editing;
+  }
+
+  startButton.addEventListener('click', () => {
+    beforeEdit = content.innerHTML;
+    setEditing(true);
+    hint.textContent = '编辑中：直接点文字修改。完成后点“保存修改”；也可撤销本次。';
+  });
+
+  saveButton.addEventListener('click', () => {
+    try {
+      localStorage.setItem(storageKey, content.innerHTML);
+      setEditing(false);
+      beforeEdit = null;
+      hint.textContent = '已保存到当前浏览器；不会自动同步到其他设备或公开网页。';
+    } catch (_) {
+      hint.textContent = '浏览器拒绝本地保存。你仍可下载当前 HTML 保留修改。';
+      setEditing(false);
+    }
+  });
+
+  cancelButton.addEventListener('click', () => {
+    if (beforeEdit !== null) content.innerHTML = beforeEdit;
+    beforeEdit = null;
+    setEditing(false);
+    hint.textContent = '本次未保存的修改已撤销。';
+  });
+
+  document.getElementById('edit-export').addEventListener('click', () => {
+    const copy = document.documentElement.cloneNode(true);
+    const copiedContent = copy.querySelector('#resume-content');
+    copiedContent.removeAttribute('contenteditable');
+    copy.querySelector('#edit-toolbar')?.remove();
+    copy.querySelector('script')?.remove();
+    const blob = new Blob(['<!doctype html>\n' + copy.outerHTML], {type: 'text/html;charset=utf-8'});
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'zoey-resume-edited.html';
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+    hint.textContent = '已导出当前版本 HTML；这个下载文件是简历页面，不含编辑工具栏。';
+  });
+
+  document.getElementById('edit-print').addEventListener('click', () => window.print());
+})();
+</script>
 </body>
 </html>
