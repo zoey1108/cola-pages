@@ -29,9 +29,9 @@ strong { font-weight: 700; color: #202b3b; }
 .education-line { display: flex; justify-content: space-between; gap: 8pt; margin: 0; white-space: nowrap; }
 .skills p { margin: 0 0 1.2pt; }
 .skill-label { font-weight: 700; color: #202b3b; }
-@media screen { body { width: 210mm; max-width: 100%; min-height: 297mm; margin: 16px auto; padding: 68px 9.5mm 8mm; background: white; box-shadow: 0 4px 22px rgba(25, 43, 69, .12); } }
+@media screen { body { width: 210mm; max-width: 100%; min-height: 297mm; margin: 16px auto; padding: 8mm 9.5mm; background: white; box-shadow: 0 4px 22px rgba(25, 43, 69, .12); } }
 @media screen and (max-width: 640px) {
-  body { width: 100%; min-height: 100vh; margin: 0; padding: 72px 15px 18px; font-size: 10pt; line-height: 1.45; box-shadow: none; }
+  body { width: 100%; min-height: 100vh; margin: 0; padding: 18px 15px; font-size: 10pt; line-height: 1.45; box-shadow: none; }
   h1 { font-size: 20pt; }
   .contact { display: grid; grid-template-columns: 1fr; gap: 2pt; white-space: normal; font-size: 9pt; }
   .job-head { flex-wrap: wrap; align-items: flex-start; gap: 1pt 8pt; }
@@ -41,7 +41,7 @@ strong { font-weight: 700; color: #202b3b; }
   .job { margin-bottom: 7pt; }
   li { margin-bottom: 3pt; }
 }
-.edit-toolbar { position: fixed; z-index: 1000; top: 10px; left: 50%; transform: translateX(-50%); width: max-content; max-width: calc(100vw - 20px); padding: 8px 10px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px; border: 1px solid #dbe3ee; border-radius: 12px; background: rgba(255,255,255,.97); box-shadow: 0 4px 18px rgba(25,43,69,.16); font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+.edit-toolbar { position: relative; z-index: 2; width: max-content; max-width: 100%; margin: 0 auto 12px; padding: 8px 10px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px; border: 1px solid #dbe3ee; border-radius: 12px; background: rgba(255,255,255,.97); box-shadow: 0 4px 18px rgba(25,43,69,.16); font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
 .edit-toolbar button { appearance: none; border: 1px solid #cad5e3; border-radius: 7px; padding: 7px 10px; background: #fff; color: #243247; font-size: 13px; cursor: pointer; }
 .edit-toolbar button.primary { color: white; background: #1763d1; border-color: #1763d1; }
 .edit-toolbar button:disabled { opacity: .45; cursor: not-allowed; }
