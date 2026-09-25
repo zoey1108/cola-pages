@@ -57,6 +57,7 @@ strong { font-weight: 700; color: #202b3b; }
   <button id="edit-cancel" type="button" hidden>撤销本次</button>
   <button id="edit-export" type="button">下载当前简历 HTML</button>
   <button id="edit-print" type="button">打印 / 保存为 PDF</button>
+  <button id="edit-reset" type="button">恢复发布版本</button>
   <span class="hint" id="edit-hint">点“开始编辑”后，直接点击简历文字修改；保存仅存在当前浏览器。</span>
 </nav>
 <main id="resume-content">
@@ -130,7 +131,8 @@ strong { font-weight: 700; color: #202b3b; }
   const startButton = document.getElementById('edit-start');
   const saveButton = document.getElementById('edit-save');
   const cancelButton = document.getElementById('edit-cancel');
-  const storageKey = 'zoey-operations-resume-editor-v1';
+  const resetButton = document.getElementById('edit-reset');
+  const storageKey = 'zoey-operations-resume-editor-v2';
   let beforeEdit = null;
 
   try {
@@ -148,6 +150,7 @@ strong { font-weight: 700; color: #202b3b; }
     startButton.hidden = editing;
     saveButton.hidden = !editing;
     cancelButton.hidden = !editing;
+    resetButton.hidden = editing;
   }
 
   startButton.addEventListener('click', () => {
@@ -191,6 +194,11 @@ strong { font-weight: 700; color: #202b3b; }
   });
 
   document.getElementById('edit-print').addEventListener('click', () => window.print());
+  resetButton.addEventListener('click', () => {
+    if (!window.confirm('删除当前浏览器保存的简历修改，并恢复公开发布的原始版本？')) return;
+    try { localStorage.removeItem(storageKey); } catch (_) {}
+    window.location.reload();
+  });
 })();
 </script>
 </body>
